@@ -10,9 +10,4 @@
     <ProjectReference Include="..\TestLabEntity\TestLabEntity.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Repository\Question\Answer\" />
-    <Folder Include="Repository\Question\Course\Chapter\" />
-  </ItemGroup>
-
 </Project>
