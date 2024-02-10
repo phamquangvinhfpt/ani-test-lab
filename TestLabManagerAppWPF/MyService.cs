@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TestLabLibrary.Repository;
+using TestLabLibrary.Repository.Question;
 
 namespace TestLabManagerAppWPF
 {
@@ -32,6 +33,7 @@ namespace TestLabManagerAppWPF
             services.AddSingleton<MainWindow>();
             services.AddSingleton<WindowLogin>();
             services.AddSingleton(typeof(IAdminRepository), typeof(AdminRepository));
+            services.AddSingleton(typeof(IQuestionRepository), typeof(QuestionRepository));
         }
     }
 }
