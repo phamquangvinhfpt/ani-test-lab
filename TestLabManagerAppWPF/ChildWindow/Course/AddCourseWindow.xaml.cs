@@ -13,7 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using TestLabEntity.AutoDB;
-using TestLabLibrary.Repository.Question;
+using TestLabLibrary.Repository;
 
 namespace TestLabManagerAppWPF.ChildWindow.Course
 {

@@ -15,7 +15,6 @@ using System.Windows.Shapes;
 using TestLabEntity.AutoDB;
 using TestLabEntity.BussinessObject;
 using TestLabLibrary.Repository;
-using TestLabLibrary.Repository.Question;
 
 namespace TestLabManagerAppWPF.ChildWindow.Course
 {

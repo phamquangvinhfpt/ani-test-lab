@@ -16,7 +16,7 @@ namespace TestLabEntity.BussinessObject
 
         public bool IsCorrect { get; set; }
 
-        public byte[] CreateAt { get; set; } = null!;
+        public DateTime CreateAt { get; set; } = DateTime.UtcNow;
 
         public DateTime? DeteleAt { get; set; }
 

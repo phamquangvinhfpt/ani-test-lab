@@ -10,8 +10,8 @@ using System.Windows.Forms;
 using System.Windows.Input;
 using TestLabEntity.BussinessObject;
 using TestLabLibrary.Repository;
-using TestLabLibrary.Repository.Question;
 using TestLabManagerAppWPF.ChildWindow.Chapter;
+using MessageBox = System.Windows.MessageBox;
 
 namespace TestLabManagerAppWPF.ViewModel
 {
@@ -137,12 +137,23 @@ namespace TestLabManagerAppWPF.ViewModel
 
         private void ExuteAddCommand(object obj)
         {
-            // Open add chapter window
-            AddChapterWindow addChapterWindow = new AddChapterWindow(SelectedCourse.Id);
-            if (addChapterWindow.ShowDialog() == true)
+            try
             {
-                // Reload data
-                LoadChapters(SelectedCourse.Id);
+                if (SelectedCourse == null)
+                {
+                    MessageBox.Show("Please select course", "Add chapter failed", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+                // Open add chapter window
+                AddChapterWindow addChapterWindow = new AddChapterWindow(SelectedCourse.Id);
+                if (addChapterWindow.ShowDialog() == true)
+                {
+                    // Reload data
+                    LoadChapters(SelectedCourse.Id);
+                }
+            } catch (Exception ex)
+            {
+                MessageBox.Show("Cannot open add chapter window");
             }
         }
 

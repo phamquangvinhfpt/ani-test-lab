@@ -4,21 +4,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TestLabEntity.AutoDB;
+using TestLabLibrary.DataAccess.Question;
 using TestLabLibrary.DataAccess.Question.Answer;
 using TestLabLibrary.DataAccess.Question.Course.Chapter;
 using TestLabLibrary.DataAccess.Question.Course;
-using TestLabLibrary.DataAccess.Question;
 
-namespace TestLabLibrary.Repository.Question
+namespace TestLabLibrary.Repository
 {
     public class QuestionRepository : IQuestionRepository
     {
         List<TlQuestion> IQuestionRepository.GetQuestions() => QuestionDAO.Instance.GetQuestions();
         List<TlQuestion> IQuestionRepository.GetQuestions(int offset, int limit, int course_id, int chapter_id) => QuestionDAO.Instance.GetQuestions(offset, limit, course_id, chapter_id);
-        List<TlQuestion> IQuestionRepository.GetQuestions(int offset, int limit, int course_id, int chapter_id, string searchValue) => QuestionDAO.Instance.GetQuestionsAndSearch(offset, limit, course_id, chapter_id, searchValue);
-        TlQuestion? IQuestionRepository.GetQuestion(int id) => QuestionDAO.Instance.GetQuestionById(id);
-        TlQuestion? IQuestionRepository.GetQuestion(string question_text) => QuestionDAO.Instance.GetQuestionByText(question_text);
-        bool IQuestionRepository.AddQuestion(TlQuestion question) => QuestionDAO.Instance.AddQuestion(question);
+        List<TlQuestion> IQuestionRepository.GetQuestions(int offset, int limit, int course_id, int chapter_id, string searchValue) => QuestionDAO.Instance.GetQuestions(offset, limit, course_id, chapter_id, searchValue);
+        TlQuestion? IQuestionRepository.GetQuestion(int id) => QuestionDAO.Instance.GetQuestion(id);
+        TlQuestion? IQuestionRepository.GetQuestion(string question_text) => QuestionDAO.Instance.GetQuestion(question_text);
+        int IQuestionRepository.AddQuestion(TlQuestion question) => QuestionDAO.Instance.AddQuestion(question);
         bool IQuestionRepository.UpdateQuestion(TlQuestion question) => QuestionDAO.Instance.UpdateQuestion(question);
         bool IQuestionRepository.DeleteQuestion(int id) => QuestionDAO.Instance.DeleteQuestion(id);
         // Course
@@ -54,11 +54,13 @@ namespace TestLabLibrary.Repository.Question
 
         List<TlQuestion> IQuestionRepository.GetQuestionsByPaperId(int idPaperSelected) => QuestionDAO.Instance.GetQuestionsByPaperId(idPaperSelected);
 
-        bool IQuestionRepository.DeleteQuestionPaper(int id, int IdPaperSelected) => QuestionDAO.Instance.DeleteQuestionInPaper(id, IdPaperSelected);
+        bool IQuestionRepository.DeleteQuestionPaper(int id, int IdPaperSelected) => QuestionDAO.Instance.DeleteQuestionPaper(id, IdPaperSelected);
 
         bool IQuestionRepository.DeleteAllQuestionByPaperId(int idPaperSelected) => QuestionDAO.Instance.DeleteAllQuestionByPaperId(idPaperSelected);
 
         bool IQuestionRepository.AddQuestionToPaper(int id, int idPaperSelected) => QuestionDAO.Instance.AddQuestionToPaper(id, idPaperSelected);
+
+        //List<TlSubmitpaperDetail> IQuestionRepository.GetSubmitPaperDetails(int id) => QuestionDAO.Instance.GetSubmitPaperDetails(id);
 
         object IQuestionRepository.GetQuestionsOfPaper(int id)
         {

@@ -5,16 +5,17 @@ using System.Text;
 using System.Threading.Tasks;
 using TestLabEntity.AutoDB;
 
-namespace TestLabLibrary.Repository.Question
+namespace TestLabLibrary.Repository
 {
     public interface IQuestionRepository
     {
+        // Question
         List<TlQuestion> GetQuestions();
         List<TlQuestion> GetQuestions(int offset = 0, int limit = 10, int course_id = 0, int chapter_id = 0);
         List<TlQuestion> GetQuestions(int offset = 0, int limit = 10, int course_id = 0, int chapter_id = 0, string searchValue = "");
         TlQuestion? GetQuestion(int id);
         TlQuestion? GetQuestion(string question_text);
-        bool AddQuestion(TlQuestion question);
+        int AddQuestion(TlQuestion question);
         bool UpdateQuestion(TlQuestion question);
         bool DeleteQuestion(int id);
         int CountAll();
@@ -47,6 +48,7 @@ namespace TestLabLibrary.Repository.Question
         bool DeleteQuestionPaper(int id, int IdPaperSelected);
         bool DeleteAllQuestionByPaperId(int idPaperSelected);
         bool AddQuestionToPaper(int id, int idPaperSelected);
+        //List<TlSubmitpaperDetail> GetSubmitPaperDetails(int id);
         object GetQuestionsOfPaper(int id);
     }
 }

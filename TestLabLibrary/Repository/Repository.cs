@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TestLabEntity.AutoDB;
-using TestLabLibrary.Repository.Question;
 
 namespace TestLabLibrary.Repository
 {

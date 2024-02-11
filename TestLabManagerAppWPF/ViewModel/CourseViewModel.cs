@@ -9,7 +9,6 @@ using System.Windows.Forms;
 using System.Windows.Input;
 using TestLabEntity.BussinessObject;
 using TestLabLibrary.Repository;
-using TestLabLibrary.Repository.Question;
 using TestLabManagerAppWPF.ChildWindow.Course;
 
 namespace TestLabManagerAppWPF.ViewModel

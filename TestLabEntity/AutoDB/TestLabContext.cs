@@ -103,8 +103,7 @@ public partial class TestLabContext : DbContext
                 .IsUnicode(false)
                 .HasColumnName("answer_text");
             entity.Property(e => e.CreateAt)
-                .IsRowVersion()
-                .IsConcurrencyToken()
+                .HasColumnType("datetime")
                 .HasColumnName("create_at");
             entity.Property(e => e.CreateBy).HasColumnName("create_by");
             entity.Property(e => e.DeteleAt)
@@ -137,8 +136,7 @@ public partial class TestLabContext : DbContext
                 .HasColumnName("chapter_name");
             entity.Property(e => e.CourseId).HasColumnName("course_id");
             entity.Property(e => e.CreateAt)
-                .IsRowVersion()
-                .IsConcurrencyToken()
+                .HasColumnType("datetime")
                 .HasColumnName("create_at");
             entity.Property(e => e.CreateBy).HasColumnName("create_by");
             entity.Property(e => e.DeteleAt)
@@ -168,8 +166,7 @@ public partial class TestLabContext : DbContext
                 .HasMaxLength(50)
                 .HasColumnName("course_name");
             entity.Property(e => e.CreateAt)
-                .IsRowVersion()
-                .IsConcurrencyToken()
+                .HasColumnType("datetime")
                 .HasColumnName("create_at");
             entity.Property(e => e.CreateBy).HasColumnName("create_by");
             entity.Property(e => e.DeteleAt)
@@ -192,8 +189,7 @@ public partial class TestLabContext : DbContext
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.CourseId).HasColumnName("course_id");
             entity.Property(e => e.CreateAt)
-                .IsRowVersion()
-                .IsConcurrencyToken()
+                .HasColumnType("datetime")
                 .HasColumnName("create_at");
             entity.Property(e => e.CreateBy).HasColumnName("create_by");
             entity.Property(e => e.DeteleAt)
@@ -236,8 +232,7 @@ public partial class TestLabContext : DbContext
             entity.Property(e => e.ChapterId).HasColumnName("chapter_id");
             entity.Property(e => e.CourseId).HasColumnName("course_id");
             entity.Property(e => e.CreateAt)
-                .IsRowVersion()
-                .IsConcurrencyToken()
+                .HasColumnType("datetime")
                 .HasColumnName("create_at");
             entity.Property(e => e.CreateBy).HasColumnName("create_by");
             entity.Property(e => e.DeteleAt)

@@ -28,7 +28,7 @@ namespace TestLabLibrary.DataAccess.Question
             }
         }
 
-        public List<TlQuestion> GetAllQuestions()
+        public List<TlQuestion> GetQuestions()
         {
             List<TlQuestion> questions = new List<TlQuestion>();
             try
@@ -77,7 +77,7 @@ namespace TestLabLibrary.DataAccess.Question
             return questions;
         }
 
-        public List<TlQuestion> GetQuestionsAndSearch(int offset = 0, int limit = 10, int course_id = 0, int chapter_id = 0, string search = "")
+        public List<TlQuestion> GetQuestions(int offset = 0, int limit = 10, int course_id = 0, int chapter_id = 0, string search = "")
         {
             List<TlQuestion> questions = new List<TlQuestion>();
             try
@@ -94,7 +94,7 @@ namespace TestLabLibrary.DataAccess.Question
             return questions;
         }
 
-        public TlQuestion? GetQuestionById(int id)
+        public TlQuestion? GetQuestion(int id)
         {
             TlQuestion? question = null;
             try
@@ -111,7 +111,7 @@ namespace TestLabLibrary.DataAccess.Question
             return question;
         }
 
-        public TlQuestion? GetQuestionByText(string question_text)
+        public TlQuestion? GetQuestion(string question_text)
         {
             TlQuestion? question = null;
             try
@@ -128,7 +128,7 @@ namespace TestLabLibrary.DataAccess.Question
             return question;
         }
 
-        public bool AddQuestion(TlQuestion question)
+        public int AddQuestion(TlQuestion question)
         {
             bool result = false;
             try
@@ -137,14 +137,14 @@ namespace TestLabLibrary.DataAccess.Question
                 {
                     db.TlQuestions.Add(question);
                     db.SaveChanges();
-                    result = true;
+                    return question.Id;
                 }
             }
             catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
-            return result;
+            return 0;
         }
 
         public bool UpdateQuestion(TlQuestion question)
@@ -248,7 +248,7 @@ namespace TestLabLibrary.DataAccess.Question
             }
         }
 
-        public bool DeleteQuestionInPaper(int id, int IdPaperSelected)
+        public bool DeleteQuestionPaper(int id, int IdPaperSelected)
         {
             bool result = false;
             try
@@ -325,5 +325,21 @@ namespace TestLabLibrary.DataAccess.Question
             return result;
         }
 
+        //public List<TlSubmitpaperDetail> GetSubmitPaperDetails(int id)
+        //{
+        //    List<TlSubmitpaperDetail> submitpaperDetails = new List<TlSubmitpaperDetail>();
+        //    try
+        //    {
+        //        using (var db = new TestLabContext())
+        //        {
+        //            submitpaperDetails = db.TlSubmitpaperDetails.Where(q => q.SubmitpaperId == id).ToList();
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw new Exception(ex.Message);
+        //    }
+        //    return submitpaperDetails;
+        //}
     }
 }
