@@ -246,10 +246,6 @@ namespace TestLabManagerAppWPF.ViewModel
 
             // Message
             System.Windows.MessageBox.Show("Add question successfully", "Message", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
-            // Close window
-            var window = obj as System.Windows.Window;
-            window.DialogResult = true;
-            window.Close();
         }
 
         // Get Selected Answers

@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<AppInstaller
+	Uri="file:///E:/ani-test-lab/Installer/Installer.appinstaller"
+	Version="1.0.0.0" xmlns="http://schemas.microsoft.com/appx/appinstaller/2017/2">
+	<MainBundle
+		Name="0bcb6036-8e03-45e7-b6bb-e6885a4f27fc"
+		Version="1.0.0.0"
+		Publisher="CN=9277d"
+		Uri="file:///E:/ani-test-lab/Installer/Installer_1.0.0.0_Test/Installer_1.0.0.0_x86_x64.appxbundle" />
+	<UpdateSettings>
+		<OnLaunch
+			HoursBetweenUpdateChecks="0" />
+	</UpdateSettings>
+</AppInstaller>
