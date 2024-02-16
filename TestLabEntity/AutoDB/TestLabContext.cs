@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
@@ -43,6 +44,14 @@ public partial class TestLabContext : DbContext
             Directory.CreateDirectory(appData);
         }
         string connectionString = $"Data Source={appData}\\TestLab.db";
+        //Set version:
+        string versionFile = Path.Combine(appData, "version.txt");
+        if (!File.Exists(versionFile))
+        {
+            //Assembling version
+            string version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            File.WriteAllText(versionFile, version);
+        }
         return connectionString;
     }
 
