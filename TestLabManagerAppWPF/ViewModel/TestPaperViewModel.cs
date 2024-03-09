@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -10,7 +11,14 @@ using TestLabEntity.AutoDB;
 using TestLabEntity.BussinessObject;
 using TestLabLibrary.Repository;
 using TestLabManagerAppWPF.ChildWindow.TestPaper;
-
+using Microsoft.Office.Interop.Word;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Forms;
+using System.Diagnostics;
+using System.IO;
+using Syncfusion.DocIO;
+using Syncfusion.DocIO.DLS;
 namespace TestLabManagerAppWPF.ViewModel
 {
     class TestPaperViewModel : ViewModelBase
@@ -114,6 +122,7 @@ namespace TestLabManagerAppWPF.ViewModel
         public ICommand AddCommand { get; }
         public ICommand EditCommand { get; }
         public ICommand DeleteCommand { get; }
+        public ICommand PrintCommand { get; }
         public TestPaperViewModel()
         {
             LoadCourses();
@@ -123,6 +132,7 @@ namespace TestLabManagerAppWPF.ViewModel
             AddCommand = new ViewModelCommand(ExuteAddCommand, null);
             EditCommand = new ViewModelCommand(ExuteEditCommand, null);
             DeleteCommand = new ViewModelCommand(ExuteDeleteCommand, null);
+            PrintCommand = new ViewModelCommand(ExutePrintCommand, null);
         }
 
         private void ExuteDeleteCommand(object obj)
@@ -149,7 +159,149 @@ namespace TestLabManagerAppWPF.ViewModel
                 System.Windows.MessageBox.Show("Delete paper failed with error: " + ex.Message);
             }
         }
+        private void ExutePrintCommand(object obj)
+        {
+            var selectedPapers = GetSelectedPapers();
+            if (selectedPapers.Count == 0)
+            {
+                System.Windows.MessageBox.Show("Please select a paper to export!");
+                return;
+            }
+            string path = "";
+            var dialog = new System.Windows.Forms.FolderBrowserDialog();
+            var result = dialog.ShowDialog();
+            if (result == System.Windows.Forms.DialogResult.OK)
+            {
+                path = dialog.SelectedPath;
+            }
+            if(path.Equals(""))
+            {
+                System.Windows.MessageBox.Show("Please select Path");
+                return;
+            }
+            try
+            {
+                string fileName = "test.docx";
+                string fullPath = System.IO.Path.Combine(path, fileName);
+                GenerateTestContent(selectedPapers, fullPath);
+                
+                LoadPapers();
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show("Delete paper failed with error: " + ex.Message);
+            }
+        }
+        private void GenerateTestContent(List<TlPaperObj> selectedPapers, string path)
+        {
+            var paperRepository = MyService.serviceProvider.GetService<IPaperRepository>();
+            var paperDetail = paperRepository.getPaperdetails(selectedPapers[0].Id);
+            var course = paperDetail.Course;
+            var qp = paperDetail.TlQuestionPapers.ToList();
+            Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("Ngo9BigBOggjHTQxAR8/V1NAaF1cXmhNYVRpR2Nbe05xdV9FZVZRRGYuP1ZhSXxXdkZjUX5fc3FVR2ZfVUY=");
+            
+            using (WordDocument document = new WordDocument())
+            {
+                WSection section = (WSection)document.AddSection();
 
+                IWParagraph paragraph = section.AddParagraph();
+
+                paragraph.AppendText("FPT University");
+                paragraph.AppendText("\nSample Test Paper " + DateTime.Now.Year);
+                paragraph.ParagraphFormat.HorizontalAlignment = Syncfusion.DocIO.DLS.HorizontalAlignment.Center;
+                IWTextRange textRange = paragraph.ChildEntities[0] as IWTextRange;
+                textRange.CharacterFormat.Bold = true;
+                textRange.CharacterFormat.FontSize = 16f;
+                textRange = paragraph.ChildEntities[1] as IWTextRange;
+                textRange.CharacterFormat.Bold = true;
+                textRange.CharacterFormat.FontSize = 14f;
+                section.Body.ChildEntities.Add(paragraph);
+
+                paragraph = section.AddParagraph();
+                paragraph.AppendText("\nPaper Name: " + paperDetail.PaperName);
+                paragraph.ParagraphFormat.HorizontalAlignment = Syncfusion.DocIO.DLS.HorizontalAlignment.Center;
+                textRange = paragraph.ChildEntities[0] as IWTextRange;
+                textRange.CharacterFormat.Bold = true;
+                section.Body.ChildEntities.Add(paragraph);
+
+                paragraph = section.AddParagraph();
+                paragraph.AppendText("Paper Code: " + paperDetail.PaperCode);
+                paragraph.ParagraphFormat.HorizontalAlignment = Syncfusion.DocIO.DLS.HorizontalAlignment.Center;
+                textRange = paragraph.ChildEntities[0] as IWTextRange;
+                textRange.CharacterFormat.Bold = true;
+                section.Body.ChildEntities.Add(paragraph);
+
+                paragraph = section.AddParagraph();
+                paragraph.AppendText("Question Number: " + paperDetail.QuestionNum);
+                paragraph.ParagraphFormat.HorizontalAlignment = Syncfusion.DocIO.DLS.HorizontalAlignment.Center;
+                textRange = paragraph.ChildEntities[0] as IWTextRange;
+                textRange.CharacterFormat.Bold = true;
+                section.Body.ChildEntities.Add(paragraph);
+
+                paragraph = section.AddParagraph();
+                paragraph.AppendText("Duration: " + paperDetail.Duration);
+                paragraph.ParagraphFormat.HorizontalAlignment = Syncfusion.DocIO.DLS.HorizontalAlignment.Center;
+                textRange = paragraph.ChildEntities[0] as IWTextRange;
+                textRange.CharacterFormat.Bold = true;
+                section.Body.ChildEntities.Add(paragraph);
+
+                paragraph = section.AddParagraph();
+                paragraph.AppendText("Course: " + course.CourseName);
+                paragraph.ParagraphFormat.HorizontalAlignment = Syncfusion.DocIO.DLS.HorizontalAlignment.Center;
+                paragraph.AppendText("\n\n");
+                paragraph.AppendText("Name: …………………………………………………………………………………………………………");
+                paragraph.AppendText("\nCode:………………………………………….. .Class: …………………………………………………….");
+                paragraph.AppendText("\n\n");
+                textRange = paragraph.ChildEntities[0] as IWTextRange;
+                textRange.CharacterFormat.Bold = true;
+                textRange = paragraph.ChildEntities[2] as IWTextRange;
+                textRange.CharacterFormat.Bold = true;
+                textRange = paragraph.ChildEntities[3] as IWTextRange;
+                textRange.CharacterFormat.Bold = true;
+                section.Body.ChildEntities.Add(paragraph);
+
+
+                for (int j = 0; j < qp.Count; j++)
+                {
+                    var q = qp[j].Question;
+                    var answers = q.TlAnswers.ToList();
+
+                    section.AddParagraph().AppendText("Question " + (j + 1) + ": " + q.QuestionText);
+
+                    if (!string.IsNullOrEmpty(Convert.ToBase64String(q.QuestionImage)))
+                    {
+                        byte[] imageBytes = Convert.FromBase64String(Convert.ToBase64String(q.QuestionImage));
+                        using (MemoryStream ms = new MemoryStream(imageBytes))
+                        {
+                            System.Drawing.Image image = System.Drawing.Image.FromStream(ms);
+                            WPicture picture = section.AddParagraph().AppendPicture(image) as WPicture;
+                            picture.HorizontalAlignment = ShapeHorizontalAlignment.Center;
+                            picture.VerticalAlignment = ShapeVerticalAlignment.Center;
+                            picture.Width = 300;
+                            picture.Height = 200;
+                        }
+                    }
+                    char index = 'A';
+
+                    for (int i = 0; i < answers.Count; i++)
+                    {
+                        var answer = answers[i];
+                        section.AddParagraph().AppendText(index + ". " + answer.AnswerText);
+                        index = (char)(index + 1);
+                        if(i == (answers.Count - 1))
+                        {
+                            index = 'A';
+                        }
+                    }
+
+                    section.AddParagraph();
+                }
+
+                document.Save(path, FormatType.Docx);
+                /*document.Open(path);*/
+                document.Close();
+            }
+        }
         private void ExuteEditCommand(object obj)
         {
             // get selected paper

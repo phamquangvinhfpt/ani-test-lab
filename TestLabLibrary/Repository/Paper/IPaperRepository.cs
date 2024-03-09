@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TestLabEntity.AutoDB;
+using TestLabEntity.Object;
 
 namespace TestLabLibrary.Repository
 {
@@ -28,5 +29,6 @@ namespace TestLabLibrary.Repository
         bool UpdateQuestionPaper(TlQuestionPaper questionPaper);
         bool DeleteQuestionPaper(int id);
         List<TlPaper> GetPapersByCourseId(int idCourseSelected, string SearchValue);
+        TlPaper getPaperdetails(int paperID);
     }
 }

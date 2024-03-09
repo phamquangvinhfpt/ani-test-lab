@@ -44,7 +44,7 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="120"/>
                 </Grid.ColumnDefinitions>
-                <ListView Grid.Column="0" ItemsSource="{Binding Papers, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="auto" Height="auto">
+                <ListView Name="paper" Grid.Column="0" ItemsSource="{Binding Papers, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="auto" Height="auto">
                     <ListView.Resources>
                         <Style TargetType="{x:Type ListViewItem}">
                             <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
@@ -81,6 +81,12 @@
                         <StackPanel Orientation="Horizontal">
                             <fa:IconImage Icon="Eraser" HorizontalAlignment="Left" Foreground="White" Width="15" Height="15" Margin="0,0,10,0"/>
                             <TextBlock Text="Delete" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="13" FontWeight="DemiBold" Foreground="White"/>
+                        </StackPanel>
+                    </Button>
+                    <Button Background="#4C073A" Width="100" Height="30" Margin="10" Command="{Binding PrintCommand}">
+                        <StackPanel Orientation="Horizontal">
+                            <fa:IconImage Icon="Eraser" HorizontalAlignment="Left" Foreground="White" Width="15" Height="15" Margin="0,0,10,0"/>
+                            <TextBlock Text="Export" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="13" FontWeight="DemiBold" Foreground="White"/>
                         </StackPanel>
                     </Button>
                 </StackPanel>

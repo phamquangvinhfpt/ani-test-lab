@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TestLabEntity.AutoDB;
+using TestLabEntity.Object;
 
 namespace TestLabLibrary.DataAccess.Paper
 {
@@ -77,6 +78,28 @@ namespace TestLabLibrary.DataAccess.Paper
                 using (var db = new TestLabContext())
                 {
                     paper = db.TlPapers.Where(p => p.Id == id).FirstOrDefault();
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            return paper;
+        }
+
+        public TlPaper? GetPaperForPrint(int id)
+        {
+            TlPaper? paper = null;
+            try
+            {
+                using (var db = new TestLabContext())
+                {
+                    paper = db.TlPapers
+                        .Include(p => p.Course)
+                        .Include(p => p.TlQuestionPapers)
+                            .ThenInclude(qp => qp.Question)
+                                .ThenInclude(q => q.TlAnswers)
+                        .FirstOrDefault(p => p.Id == id);
                 }
             }
             catch (Exception ex)
@@ -255,5 +278,7 @@ namespace TestLabLibrary.DataAccess.Paper
             }
             return papers;
         }
+
+        
     }
 }

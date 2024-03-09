@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TestLabEntity.AutoDB;
+using TestLabEntity.Object;
 using TestLabLibrary.DataAccess.Paper;
 
 namespace TestLabLibrary.Repository
@@ -31,5 +32,11 @@ namespace TestLabLibrary.Repository
         int IPaperRepository.CountAll() => PaperDAO.Instance.CountAll();
 
         List<TlPaper> IPaperRepository.GetPapersByCourseId(int idCourseSelected, string SearchValue) => PaperDAO.Instance.GetPapersByCourseId(idCourseSelected, SearchValue);
+       
+        TlPaper IPaperRepository.getPaperdetails(int paperID)
+        {
+            var qp = PaperDAO.Instance.GetPaperForPrint(paperID);
+            return qp;
+        }
     }
 }
