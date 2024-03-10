@@ -19,6 +19,7 @@ using System.Diagnostics;
 using System.IO;
 using Syncfusion.DocIO;
 using Syncfusion.DocIO.DLS;
+using System.Windows.Shapes;
 namespace TestLabManagerAppWPF.ViewModel
 {
     class TestPaperViewModel : ViewModelBase
@@ -27,7 +28,6 @@ namespace TestLabManagerAppWPF.ViewModel
         private ObservableCollection<TlCourseObj> _courses;
         private TlCourseObj _selectedCourse;
         private string _searchText = "";
-
         public ObservableCollection<TlPaperObj> Papers
         {
             get
@@ -181,15 +181,14 @@ namespace TestLabManagerAppWPF.ViewModel
             }
             try
             {
-                string fileName = "test.docx";
-                string fullPath = System.IO.Path.Combine(path, fileName);
-                GenerateTestContent(selectedPapers, fullPath);
+                
+                GenerateTestContent(selectedPapers, path);
                 
                 LoadPapers();
             }
             catch (Exception ex)
             {
-                System.Windows.MessageBox.Show("Delete paper failed with error: " + ex.Message);
+                System.Windows.MessageBox.Show("Export paper failed with error: " + ex.Message);
             }
         }
         private void GenerateTestContent(List<TlPaperObj> selectedPapers, string path)
@@ -199,67 +198,77 @@ namespace TestLabManagerAppWPF.ViewModel
             var course = paperDetail.Course;
             var qp = paperDetail.TlQuestionPapers.ToList();
             Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("Ngo9BigBOggjHTQxAR8/V1NAaF1cXmhNYVRpR2Nbe05xdV9FZVZRRGYuP1ZhSXxXdkZjUX5fc3FVR2ZfVUY=");
-            
+            string fileName = paperDetail.PaperName + ".docx";
+            string fullPath = System.IO.Path.Combine(path, fileName);
+            string[] alphabetArray = new string[]
+{
+    "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
+    "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"
+};
             using (WordDocument document = new WordDocument())
             {
                 WSection section = (WSection)document.AddSection();
 
                 IWParagraph paragraph = section.AddParagraph();
 
-                paragraph.AppendText("FPT University");
-                paragraph.AppendText("\nSample Test Paper " + DateTime.Now.Year);
-                paragraph.ParagraphFormat.HorizontalAlignment = Syncfusion.DocIO.DLS.HorizontalAlignment.Center;
+                paragraph.AppendText("     FPT University\t\t\t\t\t\t\t\t\tSubject: " + course.CourseName);
+                paragraph.AppendText("\nSample Test Paper " + DateTime.Now.Year + "\t\t\t\t\t\t\t\t\tTime: " + paperDetail.Duration);
+                paragraph.AppendText("\n          Official\t\t\t\t\t\t\t\t\t\tQuestion Number: " + paperDetail.QuestionNum);
+                paragraph.ParagraphFormat.HorizontalAlignment = Syncfusion.DocIO.DLS.HorizontalAlignment.Left;
                 IWTextRange textRange = paragraph.ChildEntities[0] as IWTextRange;
+                textRange.CharacterFormat.FontSize = 11f;
+                textRange = paragraph.ChildEntities[1] as IWTextRange;
+                textRange.CharacterFormat.FontSize = 10f;
+                textRange = paragraph.ChildEntities[2] as IWTextRange;
+                textRange.CharacterFormat.FontSize = 10f;
+                section.Body.ChildEntities.Add(paragraph);
+
+                paragraph = section.AddParagraph();
+                paragraph.ParagraphFormat.HorizontalAlignment = Syncfusion.DocIO.DLS.HorizontalAlignment.Center;
+                paragraph.AppendText("\n\nName: …………………………………………………………………………………………………………");
+                paragraph.AppendText("\nCode:………………………………………….. .Class: …………………………………………………….\n\n");
+                textRange = paragraph.ChildEntities[0] as IWTextRange;
                 textRange.CharacterFormat.Bold = true;
-                textRange.CharacterFormat.FontSize = 16f;
                 textRange = paragraph.ChildEntities[1] as IWTextRange;
                 textRange.CharacterFormat.Bold = true;
-                textRange.CharacterFormat.FontSize = 14f;
                 section.Body.ChildEntities.Add(paragraph);
+                
+                int size_answer = GetMaxAnswer(qp);
+                
+                WTable table = (WTable)section.AddTable();
+                int collumn = qp.Count + 1;
+                table.ResetCells(collumn + 1, size_answer);
 
-                paragraph = section.AddParagraph();
-                paragraph.AppendText("\nPaper Name: " + paperDetail.PaperName);
-                paragraph.ParagraphFormat.HorizontalAlignment = Syncfusion.DocIO.DLS.HorizontalAlignment.Center;
-                textRange = paragraph.ChildEntities[0] as IWTextRange;
-                textRange.CharacterFormat.Bold = true;
-                section.Body.ChildEntities.Add(paragraph);
+                // Thêm dòng tiêu đề
+                for (int i = 1; i <= qp.Count; i++)
+                {
+                    table[0, i].AddParagraph().AppendText((i).ToString());
+                    table[0, i].CellFormat.HorizontalMerge = CellMerge.Start;
+                    table[0, i].CellFormat.VerticalAlignment = Syncfusion.DocIO.DLS.VerticalAlignment.Middle;
+                    table[0, i].CellFormat.Paddings.All = 5;
+                    table[0, i].Paragraphs[0].ParagraphFormat.HorizontalAlignment = Syncfusion.DocIO.DLS.HorizontalAlignment.Center;
+                }
 
-                paragraph = section.AddParagraph();
-                paragraph.AppendText("Paper Code: " + paperDetail.PaperCode);
-                paragraph.ParagraphFormat.HorizontalAlignment = Syncfusion.DocIO.DLS.HorizontalAlignment.Center;
-                textRange = paragraph.ChildEntities[0] as IWTextRange;
-                textRange.CharacterFormat.Bold = true;
-                section.Body.ChildEntities.Add(paragraph);
+                // Thêm dòng câu trả lời
 
-                paragraph = section.AddParagraph();
-                paragraph.AppendText("Question Number: " + paperDetail.QuestionNum);
-                paragraph.ParagraphFormat.HorizontalAlignment = Syncfusion.DocIO.DLS.HorizontalAlignment.Center;
-                textRange = paragraph.ChildEntities[0] as IWTextRange;
-                textRange.CharacterFormat.Bold = true;
-                section.Body.ChildEntities.Add(paragraph);
-
-                paragraph = section.AddParagraph();
-                paragraph.AppendText("Duration: " + paperDetail.Duration);
-                paragraph.ParagraphFormat.HorizontalAlignment = Syncfusion.DocIO.DLS.HorizontalAlignment.Center;
-                textRange = paragraph.ChildEntities[0] as IWTextRange;
-                textRange.CharacterFormat.Bold = true;
-                section.Body.ChildEntities.Add(paragraph);
-
-                paragraph = section.AddParagraph();
-                paragraph.AppendText("Course: " + course.CourseName);
-                paragraph.ParagraphFormat.HorizontalAlignment = Syncfusion.DocIO.DLS.HorizontalAlignment.Center;
-                paragraph.AppendText("\n\n");
-                paragraph.AppendText("Name: …………………………………………………………………………………………………………");
-                paragraph.AppendText("\nCode:………………………………………….. .Class: …………………………………………………….");
-                paragraph.AppendText("\n\n");
-                textRange = paragraph.ChildEntities[0] as IWTextRange;
-                textRange.CharacterFormat.Bold = true;
-                textRange = paragraph.ChildEntities[2] as IWTextRange;
-                textRange.CharacterFormat.Bold = true;
-                textRange = paragraph.ChildEntities[3] as IWTextRange;
-                textRange.CharacterFormat.Bold = true;
-                section.Body.ChildEntities.Add(paragraph);
-
+                for(int i = 1; i <= collumn; i++)
+{
+                    for (int j = 0; j < size_answer; j++)
+                    {
+                        if (j == 0)
+                        {
+                            table[i, j].AddParagraph().AppendText(alphabetArray[i - 1]);
+                        }
+                        else
+                        {
+                            table[i, j].AddParagraph().AppendText("o");
+                        }
+                        table[i, j].CellFormat.VerticalAlignment = Syncfusion.DocIO.DLS.VerticalAlignment.Middle;
+                        table[i, j].CellFormat.Paddings.All = 5;
+                        table[i, j].Paragraphs[0].ParagraphFormat.HorizontalAlignment = Syncfusion.DocIO.DLS.HorizontalAlignment.Center;
+                    }
+                }
+                section.Body.ChildEntities.Add(table);
 
                 for (int j = 0; j < qp.Count; j++)
                 {
@@ -268,7 +277,7 @@ namespace TestLabManagerAppWPF.ViewModel
 
                     section.AddParagraph().AppendText("Question " + (j + 1) + ": " + q.QuestionText);
 
-                    if (!string.IsNullOrEmpty(Convert.ToBase64String(q.QuestionImage)))
+                    if (q.QuestionImage != null)
                     {
                         byte[] imageBytes = Convert.FromBase64String(Convert.ToBase64String(q.QuestionImage));
                         using (MemoryStream ms = new MemoryStream(imageBytes))
@@ -281,8 +290,8 @@ namespace TestLabManagerAppWPF.ViewModel
                             picture.Height = 200;
                         }
                     }
-                    char index = 'A';
 
+                    char index = 'A';
                     for (int i = 0; i < answers.Count; i++)
                     {
                         var answer = answers[i];
@@ -297,10 +306,32 @@ namespace TestLabManagerAppWPF.ViewModel
                     section.AddParagraph();
                 }
 
-                document.Save(path, FormatType.Docx);
-                /*document.Open(path);*/
+
+                paragraph = section.AddParagraph();
+                paragraph.ParagraphFormat.HorizontalAlignment = Syncfusion.DocIO.DLS.HorizontalAlignment.Center;
+                paragraph.AppendText("\n===End===");
+                paragraph.AppendText("\nCandidates may not use the document. The exam invigilator did not explain further.");
+                textRange = paragraph.ChildEntities[0] as IWTextRange;
+                textRange.CharacterFormat.Bold = true;
+                textRange = paragraph.ChildEntities[1] as IWTextRange;
+                textRange.CharacterFormat.Bold = true;
+                section.Body.ChildEntities.Add(paragraph);
+
+                document.Save(fullPath, FormatType.Docx);
                 document.Close();
             }
+        }
+        private int GetMaxAnswer(List<TlQuestionPaper> qp)
+        {
+            int maxAnswer = 0;
+            foreach (TlQuestionPaper p in qp)
+            {
+                if(maxAnswer < p.Question.TlAnswers.Count)
+                {
+                    maxAnswer = p.Question.TlAnswers.Count;
+                }
+            }
+            return maxAnswer;
         }
         private void ExuteEditCommand(object obj)
         {
