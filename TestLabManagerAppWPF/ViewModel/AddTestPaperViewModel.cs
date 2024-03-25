@@ -215,10 +215,6 @@ namespace TestLabManagerAppWPF.ViewModel
             {
                 PaperName = PaperName,
                 PaperCode = PaperCode,
-                Duration = int.Parse(Duration),
-                StartTime = StartTime,
-                EndTime = EndTime,
-                IsOpen = IsOpen,
                 CourseId = IdCourseSelected,
                 QuestionNum = QuestionsOfTestPaper.Count,
                 CreateBy = 1

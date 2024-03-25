@@ -16,14 +16,6 @@ namespace TestLabEntity.AutoDB
 
         public int QuestionNum { get; set; }
 
-        public int Duration { get; set; }
-
-        public DateTime? StartTime { get; set; }
-
-        public DateTime? EndTime { get; set; }
-
-        public bool IsOpen { get; set; }
-
         public DateTime CreateAt { get; set; } = DateTime.UtcNow;
 
         public DateTime? DeteleAt { get; set; }

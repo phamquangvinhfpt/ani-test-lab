@@ -212,7 +212,6 @@ namespace TestLabManagerAppWPF.ViewModel
                 IWParagraph paragraph = section.AddParagraph();
 
                 paragraph.AppendText("     FPT University\t\t\t\t\t\t\t\t\tSubject: " + course.CourseName);
-                paragraph.AppendText("\nSample Test Paper " + DateTime.Now.Year + "\t\t\t\t\t\t\t\t\tTime: " + paperDetail.Duration);
                 paragraph.AppendText("\n          Official\t\t\t\t\t\t\t\t\t\tQuestion Number: " + paperDetail.QuestionNum);
                 paragraph.ParagraphFormat.HorizontalAlignment = Syncfusion.DocIO.DLS.HorizontalAlignment.Left;
                 IWTextRange textRange = paragraph.ChildEntities[0] as IWTextRange;
