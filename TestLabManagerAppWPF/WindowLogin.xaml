@@ -120,7 +120,7 @@
                                FontWeight="Medium"
                                FontFamily="Montserrat"
                                HorizontalAlignment="Center"/>
-                    <TextBlock Text="Exam Online Management Application"
+                    <TextBlock Text="Exam Management Application"
                                Foreground="White"
                                FontSize="12"
                                FontWeight="Medium"

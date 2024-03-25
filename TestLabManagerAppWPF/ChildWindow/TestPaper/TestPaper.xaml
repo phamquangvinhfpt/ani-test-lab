@@ -57,10 +57,6 @@
                             <GridViewColumn Header="Paper Code" Width="150" DisplayMemberBinding="{Binding Path=PaperCode}"/>
                             <GridViewColumn Header="Course" Width="70" DisplayMemberBinding="{Binding Path=Course.CourseName}"/>
                             <GridViewColumn Header="Q Num" Width="50" DisplayMemberBinding="{Binding Path=QuestionNum}"/>
-                            <GridViewColumn Header="Duration" Width="70" DisplayMemberBinding="{Binding Path=Duration}"/>
-                            <GridViewColumn Header="Is Open" Width="70" DisplayMemberBinding="{Binding Path=IsOpen}"/>
-                            <GridViewColumn Header="Start Date" Width="145" DisplayMemberBinding="{Binding Path=StartTime}"/>
-                            <GridViewColumn Header="End Date" Width="145" DisplayMemberBinding="{Binding Path=EndTime}"/>
                         </GridView>
                     </ListView.View>
                 </ListView>

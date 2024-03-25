@@ -204,11 +204,6 @@ public partial class TestLabContext : DbContext
             entity.Property(e => e.DeteleAt)
                 .HasColumnType("datetime")
                 .HasColumnName("detele_at");
-            entity.Property(e => e.Duration).HasColumnName("duration");
-            entity.Property(e => e.EndTime)
-                .HasColumnType("datetime")
-                .HasColumnName("end_time");
-            entity.Property(e => e.IsOpen).HasColumnName("is_open");
             entity.Property(e => e.PaperCode)
                 .HasMaxLength(50)
                 .HasColumnName("paper_code");
@@ -216,9 +211,6 @@ public partial class TestLabContext : DbContext
                 .HasMaxLength(50)
                 .HasColumnName("paper_name");
             entity.Property(e => e.QuestionNum).HasColumnName("question_num");
-            entity.Property(e => e.StartTime)
-                .HasColumnType("datetime")
-                .HasColumnName("start_time");
             entity.Property(e => e.UpdateAt)
                 .HasColumnType("datetime")
                 .HasColumnName("update_at");

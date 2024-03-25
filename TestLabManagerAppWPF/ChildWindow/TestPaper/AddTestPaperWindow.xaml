@@ -41,23 +41,7 @@
             </StackPanel>
             <StackPanel Orientation="Vertical" Grid.Column="2">
                 <Label Content="Number of Questions" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="13,0,0,0"/>
-                <TextBox Text="{Binding NumberOfQuestion, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" IsEnabled="False" Width="120" Height="20" Margin="0,0,0,0"/>
-            </StackPanel>
-            <StackPanel Orientation="Vertical" Grid.Column="3">
-                <Label Content="Is Open" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="13,0,0,0"/>
-                <CheckBox IsChecked="{Binding IsOpen, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200" Height="20" Margin="10,0,0,0"/>
-            </StackPanel>
-            <StackPanel Orientation="Vertical" Grid.Row="1">
-                <Label Content="Start Time" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="13,0,0,0"/>
-                <xctk:DateTimePicker Value="{Binding StartTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="280" Height="20" Margin="0,0,0,0"/>
-            </StackPanel>
-            <StackPanel Orientation="Vertical" Grid.Row="1" Grid.Column="1">
-                <Label Content="End Time" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="13,0,0,0"/>
-                <xctk:DateTimePicker Value="{Binding EndTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="280" Height="20" Margin="0,0,0,0"/>
-            </StackPanel>
-            <StackPanel Orientation="Vertical" Grid.Row="1" Grid.Column="2">
-                <Label Content="Duration" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="13,0,0,0"/>
-                <TextBox Text="{Binding Duration, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="120" Height="20" Margin="0,0,0,0"/>
+                <TextBox Text="{Binding NumberOfQuestion, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True" IsEnabled="False" Width="149" Height="20" Margin="0,0,0,0"/>
             </StackPanel>
         </Grid>
         <Grid Grid.Row="1" Grid.ColumnSpan="3">

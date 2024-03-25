@@ -157,11 +157,7 @@ namespace TestLabLibrary.DataAccess.Paper
                         paperToUpdate.PaperCode = paper.PaperCode;
                         paperToUpdate.PaperName = paper.PaperName;
                         paperToUpdate.QuestionNum = paper.QuestionNum;
-                        paperToUpdate.StartTime = paper.StartTime;
-                        paperToUpdate.EndTime = paper.EndTime;
-                        paperToUpdate.Duration = paper.Duration;
                         paperToUpdate.UpdateAt = DateTime.Now;
-                        paperToUpdate.IsOpen = paper.IsOpen;
                         db.SaveChanges();
                         result = true;
                     }

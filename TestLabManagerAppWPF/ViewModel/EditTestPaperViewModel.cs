@@ -179,10 +179,6 @@ namespace TestLabManagerAppWPF.ViewModel
             PaperName = paper.PaperName;
             PaperCode = paper.PaperCode;
             NumberOfQuestion = paper.QuestionNum.ToString();
-            IsOpen = paper.IsOpen;
-            StartTime = (DateTime)paper.StartTime;
-            EndTime = (DateTime)paper.EndTime;
-            Duration = paper.Duration.ToString();
             IdCourseSelected = (int)paper.CourseId;
             // Get questions of paper
             var questionRepository = MyService.serviceProvider.GetService<IQuestionRepository>();
@@ -227,16 +223,6 @@ namespace TestLabManagerAppWPF.ViewModel
                 MessageBox.Show("Please add question to paper!");
                 return;
             }
-            if (StartTime > EndTime)
-            {
-                MessageBox.Show("Start time must be less than end time!");
-                return;
-            }
-            if (EndTime < DateTime.Now)
-            {
-                MessageBox.Show("End time must be greater than current time!");
-                return;
-            }
             if (string.IsNullOrEmpty(Duration))
             {
                 MessageBox.Show("Please enter duration!");
@@ -248,10 +234,6 @@ namespace TestLabManagerAppWPF.ViewModel
 
             Paper.PaperName = PaperName;
             Paper.PaperCode = PaperCode;
-            Paper.Duration = int.Parse(Duration);
-            Paper.StartTime = StartTime;
-            Paper.EndTime = EndTime;
-            Paper.IsOpen = IsOpen;
             Paper.CourseId = IdCourseSelected;
             Paper.QuestionNum = QuestionsOfTestPaper.Count;
             Paper.CreateBy = 1;

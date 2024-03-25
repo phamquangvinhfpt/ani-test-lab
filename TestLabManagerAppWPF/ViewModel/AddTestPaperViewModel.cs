@@ -193,16 +193,6 @@ namespace TestLabManagerAppWPF.ViewModel
                 MessageBox.Show("Please add question to paper!");
                 return;
             }
-            if (StartTime > EndTime)
-            {
-                MessageBox.Show("Start time must be less than end time!");
-                return;
-            }
-            if (EndTime < DateTime.Now)
-            {
-                MessageBox.Show("End time must be greater than current time!");
-                return;
-            }
             if (string.IsNullOrEmpty(Duration))
             {
                 MessageBox.Show("Please enter duration!");
@@ -215,10 +205,6 @@ namespace TestLabManagerAppWPF.ViewModel
             {
                 PaperName = PaperName,
                 PaperCode = PaperCode,
-                Duration = int.Parse(Duration),
-                StartTime = StartTime,
-                EndTime = EndTime,
-                IsOpen = IsOpen,
                 CourseId = IdCourseSelected,
                 QuestionNum = QuestionsOfTestPaper.Count,
                 CreateBy = 1
