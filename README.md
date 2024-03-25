@@ -1,4 +1,4 @@
-# Hệ thống quản lý đề thi bằng winform + asp net core
+# Hệ thống quản lý đề thi bằng wpf
 
 ## Features
 
