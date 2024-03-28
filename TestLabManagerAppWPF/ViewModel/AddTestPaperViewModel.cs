@@ -193,12 +193,6 @@ namespace TestLabManagerAppWPF.ViewModel
                 MessageBox.Show("Please add question to paper!");
                 return;
             }
-            if (string.IsNullOrEmpty(Duration))
-            {
-                MessageBox.Show("Please enter duration!");
-                return;
-            }
-            // Save paper
             var paperRepository = MyService.serviceProvider.GetService<IPaperRepository>();
             var questionRepository = MyService.serviceProvider.GetService<IQuestionRepository>();
             var paper = new TlPaperObj

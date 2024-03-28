@@ -237,9 +237,8 @@ namespace TestLabManagerAppWPF.ViewModel
                 
                 WTable table = (WTable)section.AddTable();
                 int collumn = qp.Count + 1;
-                table.ResetCells(collumn + 1, size_answer);
+                table.ResetCells(collumn + 1, size_answer + 1);
 
-                // Thêm dòng tiêu đề
                 for (int i = 1; i <= qp.Count; i++)
                 {
                     table[0, i].AddParagraph().AppendText((i).ToString());
@@ -249,11 +248,10 @@ namespace TestLabManagerAppWPF.ViewModel
                     table[0, i].Paragraphs[0].ParagraphFormat.HorizontalAlignment = Syncfusion.DocIO.DLS.HorizontalAlignment.Center;
                 }
 
-                // Thêm dòng câu trả lời
 
                 for(int i = 1; i <= collumn; i++)
 {
-                    for (int j = 0; j < size_answer; j++)
+                    for (int j = 0; j <= size_answer; j++)
                     {
                         if (j == 0)
                         {
