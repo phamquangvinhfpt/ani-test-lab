@@ -25,6 +25,11 @@ using iTextSharp.text.pdf;
 using Document = iTextSharp.text.Document;
 using Paragraph = iTextSharp.text.Paragraph;
 using Image = iTextSharp.text.Image;
+using WpfMath.Parsers;
+using TestLabManagerAppWPF.ChildWindow.Question;
+using WpfMath.Rendering;
+using XamlMath;
+using System.Windows.Media.Imaging;
 
 namespace TestLabManagerAppWPF.ViewModel
 {
@@ -208,10 +213,11 @@ namespace TestLabManagerAppWPF.ViewModel
             string fileName = paperDetail.PaperName + ".docx";
             string fullPath = System.IO.Path.Combine(path, fileName);
             string[] alphabetArray = new string[]
-{
-    "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
-    "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"
-};
+            {
+        "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
+        "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"
+            };
+
             using (WordDocument document = new WordDocument())
             {
                 WSection section = (WSection)document.AddSection();
@@ -239,9 +245,9 @@ namespace TestLabManagerAppWPF.ViewModel
                 textRange = paragraph.ChildEntities[1] as IWTextRange;
                 textRange.CharacterFormat.Bold = true;
                 section.Body.ChildEntities.Add(paragraph);
-                
+
                 int size_answer = GetMaxAnswer(qp);
-                
+
                 WTable table = (WTable)section.AddTable();
                 int collumn = qp.Count + 1;
                 table.ResetCells(collumn + 1, size_answer + 1);
@@ -255,9 +261,8 @@ namespace TestLabManagerAppWPF.ViewModel
                     table[0, i].Paragraphs[0].ParagraphFormat.HorizontalAlignment = Syncfusion.DocIO.DLS.HorizontalAlignment.Center;
                 }
 
-
-                for(int i = 1; i <= collumn; i++)
-{
+                for (int i = 1; i <= collumn; i++)
+                {
                     for (int j = 0; j <= size_answer; j++)
                     {
                         if (j == 0)
@@ -280,7 +285,32 @@ namespace TestLabManagerAppWPF.ViewModel
                     var q = qp[j].Question;
                     var answers = q.TlAnswers.ToList();
 
-                    section.AddParagraph().AppendText("Question " + (j + 1) + ": " + q.QuestionText);
+                    // Render question text to image
+                    var parser = WpfTeXFormulaParser.Instance;
+                    var formula = parser.Parse(q.QuestionText);
+                    var environment = WpfTeXEnvironment.Create(TexStyle.Display, 20.0, "Arial");
+                    var bitmapSource = formula.RenderToBitmap(environment);
+                    var encoder = new PngBitmapEncoder();
+                    encoder.Frames.Add(BitmapFrame.Create(bitmapSource));
+
+                    // Question text paragraph
+                    IWParagraph questionParagraph = section.AddParagraph();
+                    questionParagraph.AppendText("Question " + (j + 1) + ": ");
+
+                    // Question image paragraph
+                    IWParagraph imageParagraph = section.AddParagraph();
+                    using (MemoryStream ms = new MemoryStream())
+                    {
+                        encoder.Save(ms);
+                        byte[] imageBytes = ms.ToArray();
+                        using (MemoryStream ms2 = new MemoryStream(imageBytes))
+                        {
+                            System.Drawing.Image image = System.Drawing.Image.FromStream(ms2);
+                            WPicture picture = imageParagraph.AppendPicture(image) as WPicture;
+                            picture.HorizontalAlignment = ShapeHorizontalAlignment.Center;
+                            picture.VerticalAlignment = ShapeVerticalAlignment.Center;
+                        }
+                    }
 
                     if (q.QuestionImage != null)
                     {
@@ -291,8 +321,6 @@ namespace TestLabManagerAppWPF.ViewModel
                             WPicture picture = section.AddParagraph().AppendPicture(image) as WPicture;
                             picture.HorizontalAlignment = ShapeHorizontalAlignment.Center;
                             picture.VerticalAlignment = ShapeVerticalAlignment.Center;
-                            picture.Width = 300;
-                            picture.Height = 200;
                         }
                     }
 
@@ -300,9 +328,35 @@ namespace TestLabManagerAppWPF.ViewModel
                     for (int i = 0; i < answers.Count; i++)
                     {
                         var answer = answers[i];
-                        section.AddParagraph().AppendText(index + ". " + answer.AnswerText);
+
+                        // Render answer text to image
+                        formula = parser.Parse(answer.AnswerText);
+                        environment = WpfTeXEnvironment.Create(TexStyle.Display, 10.0, "Arial");
+                        bitmapSource = formula.RenderToBitmap(environment);
+                        encoder = new PngBitmapEncoder();
+                        encoder.Frames.Add(BitmapFrame.Create(bitmapSource));
+
+                        // Answer text paragraph
+                        IWParagraph answerParagraph = section.AddParagraph();
+                        answerParagraph.AppendText(index + ". ");
+
+                        // Answer image paragraph
+                        imageParagraph = section.AddParagraph();
+                        using (MemoryStream ms = new MemoryStream())
+                        {
+                            encoder.Save(ms);
+                            byte[] imageBytes = ms.ToArray();
+                            using (MemoryStream ms2 = new MemoryStream(imageBytes))
+                            {
+                                System.Drawing.Image image = System.Drawing.Image.FromStream(ms2);
+                                WPicture picture = imageParagraph.AppendPicture(image) as WPicture;
+                                picture.HorizontalAlignment = ShapeHorizontalAlignment.Center;
+                                picture.VerticalAlignment = ShapeVerticalAlignment.Center;
+                            }
+                        }
+
                         index = (char)(index + 1);
-                        if(i == (answers.Count - 1))
+                        if (i == (answers.Count - 1))
                         {
                             index = 'A';
                         }
@@ -310,7 +364,6 @@ namespace TestLabManagerAppWPF.ViewModel
 
                     section.AddParagraph();
                 }
-
 
                 paragraph = section.AddParagraph();
                 paragraph.ParagraphFormat.HorizontalAlignment = Syncfusion.DocIO.DLS.HorizontalAlignment.Center;
@@ -408,6 +461,7 @@ namespace TestLabManagerAppWPF.ViewModel
         private void GeneratePDFContent(List<TlPaperObj> selectedPapers, string path)
         {
             var paperRepository = MyService.serviceProvider.GetService<IPaperRepository>();
+            var parser = WpfTeXFormulaParser.Instance;
 
             foreach (var paperObj in selectedPapers)
             {
@@ -424,24 +478,18 @@ namespace TestLabManagerAppWPF.ViewModel
 
                 using (FileStream fs = new FileStream(fullPath, FileMode.Create, FileAccess.Write, FileShare.None))
                 {
-                    using (Document document = new  Document())
+                    using (Document document = new Document())
                     {
                         iTextSharp.text.pdf.PdfWriter writer = iTextSharp.text.pdf.PdfWriter.GetInstance(document, fs);
                         document.Open();
 
                         // Add title
                         Paragraph title = new Paragraph($"FPT University\nSubject: {course.CourseName}\nSample Test Paper {DateTime.Now.Year}\nOfficial\nQuestion Number: {paperDetail.QuestionNum}");
-                        //set tittle on the left
                         title.Alignment = Element.ALIGN_LEFT;
-
-
-
                         document.Add(title);
 
                         // Add name and code
                         Paragraph nameAndCode = new Paragraph($"\n\nName: ...............................................................\n Code: .......................... Class: ..............................\n\n");
-                            
-                            
                         document.Add(nameAndCode);
 
                         // Add table
@@ -467,20 +515,47 @@ namespace TestLabManagerAppWPF.ViewModel
                         // Add questions and answers
                         foreach (var q in qp)
                         {
-                            document.Add(new Paragraph("Question " + (qp.IndexOf(q) + 1) + ": " + q.Question.QuestionText));
+                            // Render QuestionText as image
+                            var formula = parser.Parse(q.Question.QuestionText);
+                            var environment = WpfTeXEnvironment.Create(TexStyle.Display, 20.0, "Arial");
+                            var bitmapSource = formula.RenderToBitmap(environment);
+                            var encoder = new PngBitmapEncoder();
+                            encoder.Frames.Add(BitmapFrame.Create(bitmapSource));
+                            using (MemoryStream ms = new MemoryStream())
+                            {
+                                encoder.Save(ms);
+                                byte[] imageBytes = ms.ToArray();
+                                iTextSharp.text.Image image = iTextSharp.text.Image.GetInstance(imageBytes);
+                                document.Add(new Paragraph("Question " + (qp.IndexOf(q) + 1) + ":"));
+                                document.Add(image);
+                            }
 
                             // Add image if exists
                             if (q.Question.QuestionImage != null)
                             {
                                 byte[] imageBytes = Convert.FromBase64String(Convert.ToBase64String(q.Question.QuestionImage));
-                                Image image = Image.GetInstance(imageBytes);
+                                iTextSharp.text.Image image = iTextSharp.text.Image.GetInstance(imageBytes);
                                 document.Add(image);
                             }
 
                             char index = 'A';
                             foreach (var answer in q.Question.TlAnswers)
                             {
-                                document.Add(new Paragraph(index + ". " + answer.AnswerText));
+                                // Render AnswerText as image
+                                formula = parser.Parse(answer.AnswerText);
+                                environment = WpfTeXEnvironment.Create(TexStyle.Display, 10.0, "Arial");
+                                bitmapSource = formula.RenderToBitmap(environment);
+                                encoder = new PngBitmapEncoder();
+                                encoder.Frames.Add(BitmapFrame.Create(bitmapSource));
+                                using (MemoryStream ms = new MemoryStream())
+                                {
+                                    encoder.Save(ms);
+                                    byte[] imageBytes = ms.ToArray();
+                                    iTextSharp.text.Image image = iTextSharp.text.Image.GetInstance(imageBytes);
+                                    Paragraph answerParagraph = new Paragraph(index + ". ");
+                                    answerParagraph.Add(image);
+                                    document.Add(answerParagraph);
+                                }
                                 index = (char)(index + 1);
                                 if (index > 'Z') index = 'A';
                             }
@@ -490,18 +565,11 @@ namespace TestLabManagerAppWPF.ViewModel
 
                         // Add end note
                         Paragraph endNote = new Paragraph($"\n===End===\n \"Candidates may not use the document. The exam invigilator did not explain further.\"");
-                        endNote.Alignment = Element.ALIGN_CENTER; ;
+                        endNote.Alignment = Element.ALIGN_CENTER;
                         document.Add(endNote);
-                     
-
                     }
                 }
             }
         }
-
-
-
-
-
     }
 }

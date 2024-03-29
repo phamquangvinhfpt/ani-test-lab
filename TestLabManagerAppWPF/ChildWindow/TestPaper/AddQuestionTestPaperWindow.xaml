@@ -6,6 +6,7 @@
         xmlns:fa="http://schemas.awesome.incremented/wpf/xaml/fontawesome.sharp"
         xmlns:local="clr-namespace:TestLabManagerAppWPF.ChildWindow.TestPaper"
         mc:Ignorable="d"
+        xmlns:controls="clr-namespace:WpfMath.Controls;assembly=WpfMath"
         Title="AddQuestionTestPaperWindow" Height="450" Width="800">
     <Grid>
         <Grid.RowDefinitions>
@@ -41,7 +42,13 @@
             <ListView.View>
                 <GridView>
                     <GridViewColumn Header="ID" Width="50" DisplayMemberBinding="{Binding Path=Id}"/>
-                    <GridViewColumn Header="QuestionText" Width="700" DisplayMemberBinding="{Binding Path=QuestionText}"/>
+                    <GridViewColumn Header="QuestionText" Width="700">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <controls:FormulaControl Formula="{Binding Path=QuestionText}" FontSize="14" Foreground="Black"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
                 </GridView>
             </ListView.View>
         </ListView>

@@ -8,6 +8,7 @@
         d:DataContext="{d:DesignInstance Type=viewmodel:AddQuestionViewModel}"
         xmlns:local="clr-namespace:TestLabManagerAppWPF.ChildWindow.Question"
         mc:Ignorable="d"
+        xmlns:controls="clr-namespace:WpfMath.Controls;assembly=WpfMath"
         Title="AddQuestionWindow" Height="600" Width="900" Closing="Window_Closing">
     <Grid>
         <Grid.ColumnDefinitions>
@@ -83,7 +84,13 @@
                     <ListView.View>
                         <GridView>
                             <GridViewColumn Header="ID" Width="50" DisplayMemberBinding="{Binding Path=Id}"/>
-                            <GridViewColumn Header="Answer" Width="400" DisplayMemberBinding="{Binding Path=AnswerText}"/>
+                            <GridViewColumn Header="Answer" Width="400">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <controls:FormulaControl Formula="{Binding Path=AnswerText}" FontSize="14" Foreground="Black"/>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
                             <!--Is correct check box-->
                             <GridViewColumn Header="Is Correct" Width="100">
                                 <GridViewColumn.CellTemplate>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,7 +12,8 @@ namespace TestLabEntity.BussinessObject
         public int Id { get; set; }
 
         public string QuestionText { get; set; } = null!;
-
+        [NotMapped]
+        public string EquationQuestionTextToDisplay { get; set; } = null!;
         public byte[]? QuestionImage { get; set; }
         public string QuestionImageBase64
         {

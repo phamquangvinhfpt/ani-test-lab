@@ -9,6 +9,7 @@
         d:DataContext="{d:DesignInstance Type=viewmodel:AddTestPaperViewModel}"
         xmlns:local="clr-namespace:TestLabManagerAppWPF.ChildWindow.TestPaper"
         mc:Ignorable="d"
+        xmlns:controls="clr-namespace:WpfMath.Controls;assembly=WpfMath"
         Title="AddTestPaperWindow" Height="450" Width="900" Closed="Window_Closed" Closing="Window_Closing">
     <Grid>
         <Grid.ColumnDefinitions>
@@ -58,7 +59,13 @@
                 <ListView.View>
                     <GridView>
                         <GridViewColumn Header="ID" Width="50" DisplayMemberBinding="{Binding Path=Id}"/>
-                        <GridViewColumn Header="Question" Width="600" DisplayMemberBinding="{Binding Path=QuestionText}"/>
+                        <GridViewColumn Header="Question" Width="600">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <controls:FormulaControl Formula="{Binding Path=QuestionText}" FontSize="14" Foreground="Black"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
                     </GridView>
                 </ListView.View>
             </ListView>
