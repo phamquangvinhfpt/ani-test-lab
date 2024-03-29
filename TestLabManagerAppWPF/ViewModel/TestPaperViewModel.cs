@@ -20,6 +20,12 @@ using System.IO;
 using Syncfusion.DocIO;
 using Syncfusion.DocIO.DLS;
 using System.Windows.Shapes;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
+using Document = iTextSharp.text.Document;
+using Paragraph = iTextSharp.text.Paragraph;
+using Image = iTextSharp.text.Image;
+
 namespace TestLabManagerAppWPF.ViewModel
 {
     class TestPaperViewModel : ViewModelBase
@@ -183,7 +189,8 @@ namespace TestLabManagerAppWPF.ViewModel
             {
                 
                 GenerateTestContent(selectedPapers, path);
-                
+                GeneratePDFContent(selectedPapers, path);
+
                 LoadPapers();
             }
             catch (Exception ex)
@@ -395,5 +402,106 @@ namespace TestLabManagerAppWPF.ViewModel
             // Notify UI to update
             OnPropertyChanged(nameof(Papers));
         }
+
+
+
+        private void GeneratePDFContent(List<TlPaperObj> selectedPapers, string path)
+        {
+            var paperRepository = MyService.serviceProvider.GetService<IPaperRepository>();
+
+            foreach (var paperObj in selectedPapers)
+            {
+                var paperDetail = paperRepository.getPaperdetails(paperObj.Id);
+                var course = paperDetail.Course;
+                var qp = paperDetail.TlQuestionPapers.ToList();
+                string fileName = paperDetail.PaperName + ".pdf";
+                string fullPath = System.IO.Path.Combine(path, fileName);
+                string[] alphabetArray = new string[]
+                {
+            "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M",
+            "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"
+                };
+
+                using (FileStream fs = new FileStream(fullPath, FileMode.Create, FileAccess.Write, FileShare.None))
+                {
+                    using (Document document = new  Document())
+                    {
+                        iTextSharp.text.pdf.PdfWriter writer = iTextSharp.text.pdf.PdfWriter.GetInstance(document, fs);
+                        document.Open();
+
+                        // Add title
+                        Paragraph title = new Paragraph($"FPT University\nSubject: {course.CourseName}\nSample Test Paper {DateTime.Now.Year}\nOfficial\nQuestion Number: {paperDetail.QuestionNum}");
+                        //set tittle on the left
+                        title.Alignment = Element.ALIGN_LEFT;
+
+
+
+                        document.Add(title);
+
+                        // Add name and code
+                        Paragraph nameAndCode = new Paragraph($"\n\nName: ...............................................................\n Code: .......................... Class: ..............................\n\n");
+                            
+                            
+                        document.Add(nameAndCode);
+
+                        // Add table
+                        PdfPTable table = new PdfPTable(qp.Count + 1);
+                        for (int i = 0; i <= qp.Count; i++)
+                        {
+                            PdfPCell cell = new PdfPCell(new Phrase(i == 0 ? "" : i.ToString()));
+                            cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                            table.AddCell(cell);
+                        }
+
+                        for (int i = 1; i <= qp.Count; i++)
+                        {
+                            for (int j = 0; j <= GetMaxAnswer(qp); j++)
+                            {
+                                PdfPCell cell = new PdfPCell(new Phrase(j == 0 ? alphabetArray[i - 1] : "o"));
+                                cell.HorizontalAlignment = Element.ALIGN_CENTER;
+                                table.AddCell(cell);
+                            }
+                        }
+                        document.Add(table);
+
+                        // Add questions and answers
+                        foreach (var q in qp)
+                        {
+                            document.Add(new Paragraph("Question " + (qp.IndexOf(q) + 1) + ": " + q.Question.QuestionText));
+
+                            // Add image if exists
+                            if (q.Question.QuestionImage != null)
+                            {
+                                byte[] imageBytes = Convert.FromBase64String(Convert.ToBase64String(q.Question.QuestionImage));
+                                Image image = Image.GetInstance(imageBytes);
+                                document.Add(image);
+                            }
+
+                            char index = 'A';
+                            foreach (var answer in q.Question.TlAnswers)
+                            {
+                                document.Add(new Paragraph(index + ". " + answer.AnswerText));
+                                index = (char)(index + 1);
+                                if (index > 'Z') index = 'A';
+                            }
+
+                            document.Add(new Paragraph());
+                        }
+
+                        // Add end note
+                        Paragraph endNote = new Paragraph($"\n===End===\n \"Candidates may not use the document. The exam invigilator did not explain further.\"");
+                        endNote.Alignment = Element.ALIGN_CENTER; ;
+                        document.Add(endNote);
+                     
+
+                    }
+                }
+            }
+        }
+
+
+
+
+
     }
 }
