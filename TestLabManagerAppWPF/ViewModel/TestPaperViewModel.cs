@@ -250,9 +250,9 @@ namespace TestLabManagerAppWPF.ViewModel
 
                 WTable table = (WTable)section.AddTable();
                 int collumn = qp.Count + 1;
-                table.ResetCells(collumn + 1, size_answer + 1);
+                table.ResetCells(size_answer + 1, collumn);
 
-                for (int i = 1; i <= qp.Count; i++)
+                for (int i = 1; i < collumn; i++)
                 {
                     table[0, i].AddParagraph().AppendText((i).ToString());
                     table[0, i].CellFormat.HorizontalMerge = CellMerge.Start;
@@ -261,9 +261,9 @@ namespace TestLabManagerAppWPF.ViewModel
                     table[0, i].Paragraphs[0].ParagraphFormat.HorizontalAlignment = Syncfusion.DocIO.DLS.HorizontalAlignment.Center;
                 }
 
-                for (int i = 1; i <= collumn; i++)
+                for (int i = 1; i <= size_answer; i++)
                 {
-                    for (int j = 0; j <= size_answer; j++)
+                    for (int j = 0; j < collumn; j++)
                     {
                         if (j == 0)
                         {
